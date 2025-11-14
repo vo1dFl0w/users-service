@@ -1,0 +1,13 @@
+env: "local"
+
+http_addr: ":8080"
+
+db:
+  username: "admin"
+  password: "admin"
+  host: "database"
+  port: "5432"
+  dbname: "users-db"
+  sslmode: "disable"
+
+secret: "secret_key"

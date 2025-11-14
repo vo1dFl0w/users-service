@@ -1,0 +1,32 @@
+services:
+  application:
+    build: ./
+    container_name: application
+    ports:
+      - "8080:8080"
+    environment:
+      - CONFIG_PATH=/users-service/config/config.yaml
+    depends_on:
+      - database
+      - migrations
+  database:
+    container_name: database
+    image: postgres:14-alpine
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=users-db
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+    volumes:
+      - db_data:/var/lib/postgres/data
+    restart: always
+  migrations:
+    image: migrate/migrate:latest
+    command: ["-path", "/migrations", "-database", "postgres://admin:admin@database:5432/users-db?sslmode=disable", "up"]
+    depends_on:
+      - database
+    volumes:
+      - ./migrations:/migrations
+volumes:
+  db_data:
