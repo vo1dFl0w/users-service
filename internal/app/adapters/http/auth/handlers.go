@@ -101,6 +101,7 @@ func (h *AuthHandler) Login() http.HandlerFunc {
 	}
 }
 
+/* TODO
 func (h *AuthHandler) DeleteUser() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
@@ -115,7 +116,9 @@ func (h *AuthHandler) DeleteUser() http.HandlerFunc {
 
 	}
 }
+*/
 
+/* TODO
 func (h *AuthHandler) RefreshTocken() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ctx := r.Context()
@@ -130,3 +133,4 @@ func (h *AuthHandler) RefreshTocken() http.HandlerFunc {
 
 	}
 }
+*/

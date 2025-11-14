@@ -5,7 +5,6 @@ import (
 	"fmt"
 
 	"github.com/google/uuid"
-	"github.com/vo1dFl0w/users-service/internal/app/adapters/storage"
 	"github.com/vo1dFl0w/users-service/internal/app/domain/user_domain"
 )
 
@@ -17,12 +16,12 @@ type Service interface {
 }
 
 type service struct {
-	storage storage.Storage
+	repository user_domain.UserRepository
 }
 
-func NewService(storage storage.Storage, ) Service {
+func NewService(repository user_domain.UserRepository) Service {
 	return &service{
-		storage: storage,
+		repository: repository,
 	}
 }
 
@@ -33,11 +32,11 @@ func (s *service) UserStatus(ctx context.Context, userID uuid.UUID) (*user_domai
 		return nil, err
 	}
 
-	return s.storage.User().UserStatus(ctx, userID)
+	return s.repository.UserStatus(ctx, userID)
 }
 
 func (s *service) Leaderboard(ctx context.Context) (map[int]map[string]interface{}, error) {
-	return s.storage.User().Leaderboard(ctx)
+	return s.repository.Leaderboard(ctx)
 }
 
 func (s *service) CompleteUserTask(ctx context.Context, userID uuid.UUID, task string) error {
@@ -51,7 +50,7 @@ func (s *service) CompleteUserTask(ctx context.Context, userID uuid.UUID, task s
 		return fmt.Errorf("empty task")
 	}
 
-	return s.storage.User().CompleteUserTask(ctx, userID, task)
+	return s.repository.CompleteUserTask(ctx, userID, task)
 }
 
 func (s *service) Referrer(ctx context.Context, userID uuid.UUID, referrerID uuid.UUID, task string) error {
@@ -69,5 +68,5 @@ func (s *service) Referrer(ctx context.Context, userID uuid.UUID, referrerID uui
 		return fmt.Errorf("empty task")
 	}
 
-	return s.storage.User().Referrer(ctx, userID, referrerID, task)
+	return s.repository.Referrer(ctx, userID, referrerID, task)
 }

@@ -11,7 +11,7 @@ import (
 
 type Handler struct {
 	Router      *http.ServeMux
-	Root  http.Handler
+	Root        http.Handler
 	Logger      *slog.Logger
 	JWTService  jwt.Service
 	AuthService auth_usecase.Service

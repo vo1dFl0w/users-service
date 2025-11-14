@@ -18,7 +18,7 @@ func (h *Handler) Routes() http.Handler {
 	userHandler := user.NewUserHandler(h.UserService, h.Logger)
 
 	h.Root = middlewares.LoggerMiddleware(h.Logger)(h.Router)
-	
+
 	h.Router.HandleFunc("/register", authHandler.Register())
 	h.Router.HandleFunc("/login", authHandler.Login())
 

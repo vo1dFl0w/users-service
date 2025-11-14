@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/vo1dFl0w/users-service/internal/app/adapters/storage"
 	"github.com/vo1dFl0w/users-service/internal/app/domain/auth_domain"
 	"github.com/vo1dFl0w/users-service/internal/app/usecase/jwt_usecase"
 )
@@ -24,13 +23,13 @@ type Service interface {
 }
 
 type service struct {
-	storage storage.Storage
+	repository auth_domain.AuthRepository
 	jwt jwt.Service
 }
 
-func NewService(storage storage.Storage, jwtService jwt.Service) Service {
+func NewService(auth auth_domain.AuthRepository, jwtService jwt.Service) Service {
 	return &service{
-		storage: storage,
+		repository: auth,
 		jwt: jwtService,
 	}
 }
@@ -41,7 +40,7 @@ func (s *service) CreateUser(ctx context.Context, email string, password string)
 		return fmt.Errorf("failed to create new user: %w", err)
 	}
 
-	return s.storage.Auth().CreateUser(ctx, u.Email, u.EncryptedPassword)
+	return s.repository.CreateUser(ctx, u.Email, u.EncryptedPassword)
 }
 
 func (s *service) GetUser(ctx context.Context, email string, password string) (*auth_domain.User, error) {
@@ -54,7 +53,7 @@ func (s *service) GetUser(ctx context.Context, email string, password string) (*
 		return nil, err
 	}
 
-	u, err := s.storage.Auth().GetUser(ctx, u.Email)
+	u, err := s.repository.GetUser(ctx, u.Email)
 	if err != nil {
 		return nil, err
 	}
@@ -87,7 +86,7 @@ func (s *service) IssueTokens(ctx context.Context, userID uuid.UUID) (accessToke
 	hashedToken := sha256.Sum256([]byte(refreshToken))
 	expiry := time.Now().Add(30 * 24 * time.Hour)
 
-	if err := s.storage.Auth().SaveRefreshToken(ctx, userID, hex.EncodeToString(hashedToken[:]), expiry); err != nil {
+	if err := s.repository.SaveRefreshToken(ctx, userID, hex.EncodeToString(hashedToken[:]), expiry); err != nil {
 		return "", "", err
 	}
 
@@ -95,11 +94,11 @@ func (s *service) IssueTokens(ctx context.Context, userID uuid.UUID) (accessToke
 }
 
 func (s *service) SaveRefreshToken(ctx context.Context, userID uuid.UUID, token string, expiry time.Time) error {
-	return s.storage.Auth().SaveRefreshToken(ctx, userID, token , expiry)
+	return s.repository.SaveRefreshToken(ctx, userID, token , expiry)
 }
 
 /* TODO func (s *service) GetRefreshToken(ctx context.Context, userID uuid.UUID) (*auth_domain.User, error) {
-	return s.storage.Auth().GetRefreshToken(ctx, userID)
+	return s.repository.GetRefreshToken(ctx, userID)
 }
 */
 

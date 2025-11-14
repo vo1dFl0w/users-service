@@ -35,7 +35,7 @@ func LoggerMiddleware(log *slog.Logger) func(next http.Handler) http.Handler {
 			}
 
 			complited := time.Since(start)
-			complitedStr := fmt.Sprintf("%.3f", float64(complited.Microseconds())/100)
+			complitedStr := fmt.Sprintf("%.3fms", float64(complited.Microseconds())/100)
 
 			logger.Info(
 				"completed",

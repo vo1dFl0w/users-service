@@ -60,8 +60,12 @@ func run(ctx context.Context) error {
 	store := postgres.New(db)
 
 	tokenService := jwt.New([]byte(cfg.Secret))
-	authService := auth_usecase.NewService(store, tokenService)
-	userService := user_usecase.NewService(store)
+
+	authRepository := store.Auth()
+	authService := auth_usecase.NewService(authRepository, tokenService)
+
+	userRepository := store.User()
+	userService := user_usecase.NewService(userRepository)
 
 	server := &http.Server{
 		Addr:    cfg.HTTPaddr,
