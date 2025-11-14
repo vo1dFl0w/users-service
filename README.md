@@ -1,3 +1,4 @@
+---
 # Users Service
 
 Простой HTTP-сервис на Go для управления пользователями, выполнения задач, начисления очков и работы с реферальной системой. Проект построен в стиле **гексагональной архитектуры (Hexagonal / Ports & Adapters)** и включает авторизацию через JWT, PostgreSQL, миграции и сборку через Docker Compose.
@@ -43,6 +44,28 @@ migrations/                  — миграции golang-migrate (.sql)
 Dockerfile
 docker-compose.yml
 ```
+---
+
+## Быстрый старт
+
+1. Запустить контенеры docker-compose:
+
+```bash
+docker-compose up --build
+```
+
+2. Используйте утилиту httpie или любой другой инструмент:
+
+```bash
+http POST http://localhost:8080/register email=user@example.com password=1234
+http POST http://localhost:8080/login email=user@example.com password=1234
+http GET http://localhost:8080/users/{id}/status Authorization:"Bearer $ACCESS_TOKEN"
+http PATCH http://localhost:8080/users/{id}/task/complete Authorization:"Bearer $ACCESS_TOKEN" task="task_name"
+http PATCH http://localhost:8080/users/{id}/referrer Authorization:"Bearer $ACCESS_TOKEN" referrer_id={id} task="task_name"
+http GET http://localhost:8080:8080/users/leaderboard Authorization:"Bearer $ACCESS_TOKEN"
+```
+
+---
 
 ## API
 
@@ -150,13 +173,6 @@ docker-compose.yml
 
 * `400` — некорректный входной JSON / валидация
 
-Для проверки эндпоинтов использовалась утилита httpie:
-```
-http POST http://localhost:8080/register email=user@example.com password=1234
-http POST http://localhost:8080/login email=user@example.com password=1234
-http GET http://localhost:8080/users/{id}/status Authorization:"Bearer $ACCESS_TOKEN"
-http PATCH http://localhost:8080/users/{id}/task/complete Authorization:"Bearer $ACCESS_TOKEN" task="task_name"
-http PATCH http://localhost:8080/users/{id}/referrer Authorization:"Bearer $ACCESS_TOKEN" referrer_id={id} task="task_name"
-http GET http://localhost:8080:8080/users/leaderboard Authorization:"Bearer $ACCESS_TOKEN"
-```
+---
+
 
